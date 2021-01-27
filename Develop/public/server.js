@@ -20,19 +20,11 @@ app.get("/notes", function (req, res) {
 });
 
 
-app.get("/api/restuarants/:table", function(req, res) {
-    var chosen = req.params.table;
-  
-    console.log(chosen);
-    for (var i = 0; i < infoArray.length; i++) {
-      if (chosen == infoArray[i].routeName) {
-        return res.json(infoArray[i]);
-      }
-    }
-    return res.json(false);
+app.get("/db", function(req, res) {
+    res.sendFile(path.join(__dirname, "../db/db.json"));
   });
 
-app.post("/api/info", function(req, res) {
+app.post("/api/notes", function(req, res) {
     // req.body hosts is equal to the JSON post sent from the user
     // This works because of our body parsing middleware
     var newTable = req.body;
@@ -46,7 +38,6 @@ app.post("/api/info", function(req, res) {
     infoArray.push(newTable);
   
     res.json(newTable);
-
 
   });
 
