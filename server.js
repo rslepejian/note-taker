@@ -7,6 +7,8 @@ var fs = require("fs");
 var app = express();
 var PORT = process.env.PORT || 3000;
 
+const noteArray = [{"title":"Test Title","text":"Test text"}];
+
 // Sets up the Express app to handle data parsing
 app.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({ extended: true }));
@@ -20,27 +22,21 @@ app.get("/notes", function (req, res) {
     res.sendFile(path.join(__dirname, "public/notes.html"));
 });
 
+app.get("/api/notes", function (req, res) {
+    res.sendFile(path.join(__dirname, "./db/db.json"));
+});
 
-app.get("/db", function(req, res) {
-    res.sendFile(path.join(__dirname, "../db/db.json"));
-  });
+app.post("/api/notes", function (req, res) {
+    var newNote = req.body;
 
-app.post("/api/notes", function(req, res) {
-    // req.body hosts is equal to the JSON post sent from the user
-    // This works because of our body parsing middleware
-    var newTable = req.body;
+    noteArray.push(newNote);
 
-    // Using a RegEx Pattern to remove spaces from newCharacter
-    // You can read more about RegEx Patterns later https://www.regexbuddy.com/regex.html
-    newTable.routeName = newTable.name.replace(/\s+/g, "").toLowerCase();
+    console.log(newNote);
 
-    console.log(newTable);
-
-    infoArray.push(newTable);
-
-    res.json(newTable);
-
-  });
+    fs.writeFile("./db/db.json", JSON.stringify(noteArray), function(err){
+        if (err) throw err;
+    });
+});
 
 
 app.listen(PORT, function () {
