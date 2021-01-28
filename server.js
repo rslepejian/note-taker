@@ -7,7 +7,14 @@ var fs = require("fs");
 var app = express();
 var PORT = process.env.PORT || 3000;
 
-const noteArray = [{"title":"Test Title","text":"Test text"}];
+const noteArray = JSON.parse(fs.readFileSync("./db/db.json", function(err) {
+    if (err) throw err;
+}));
+
+
+JSON.parse(fs.readFileSync("./db/db.json", function(err) {
+    if (err) throw err;
+}))
 
 // Sets up the Express app to handle data parsing
 app.use(express.static(__dirname + "/public"));
