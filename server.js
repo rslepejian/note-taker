@@ -12,9 +12,13 @@ const noteArray = JSON.parse(fs.readFileSync("./db/db.json", function(err) {
 }));
 
 
+for (var i = 0; i < noteArray.length; i++) {
+    noteArray[i].id = i;
+}
+
 JSON.parse(fs.readFileSync("./db/db.json", function(err) {
     if (err) throw err;
-}))
+}));
 
 // Sets up the Express app to handle data parsing
 app.use(express.static(__dirname + "/public"));
@@ -35,16 +39,32 @@ app.get("/api/notes", function (req, res) {
 
 app.post("/api/notes", function (req, res) {
     var newNote = req.body;
-
     noteArray.push(newNote);
-
-    console.log(newNote);
+    newNote.id = 0;
+    for (var i = 0; i < noteArray.length; i++) {
+        noteArray[i].id = i;
+    }
 
     fs.writeFile("./db/db.json", JSON.stringify(noteArray), function(err){
         if (err) throw err;
+        res.json(req.body);
     });
 });
 
+app.delete("/api/notes/:id", function (req, res) {
+    var id = parseInt(req.params.id);
+    noteArray.splice(id, 1);
+    console.log(id);
+    
+    for (var i = 0; i < noteArray.length; i++) {
+        noteArray[i].id = i;
+    }
+
+    fs.writeFile("./db/db.json", JSON.stringify(noteArray), function(err){
+        if (err) throw err;
+        res.json(req.body);
+    });
+})
 
 app.listen(PORT, function () {
     console.log("App listening on PORT " + PORT);
